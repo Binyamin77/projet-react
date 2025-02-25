@@ -1,6 +1,5 @@
 name: CI/CD Pipeline for ReactJS Deployment
 
-# Déclenche le workflow sur un push ou une pull request vers la branche main
 on:
   push:
     branches:
@@ -14,30 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout du code du dépôt
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Mettre à jour les paquets et installer openssh-client
       - name: Update packages and install openssh-client
         run: |
           sudo apt-get update
           sudo apt-get install -y openssh-client
 
-      # Créer le répertoire .ssh et configurer la clé privée
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      # Ajouter l'hôte SSH au fichier known_hosts (optionnel, pour éviter les prompts)
       - name: Add SSH host to known_hosts
         run: |
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      # Déployer le code sur l'instance EC2 via SSH
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
@@ -45,7 +39,6 @@ jobs:
             git pull origin main;
           "
 
-      # Nettoyer en supprimant le répertoire .ssh
       - name: Clean up SSH key
         run: |
           rm -rf ~/.ssh
