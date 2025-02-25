@@ -13,7 +13,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Binyamin
+          Binyamin Hayat
         </a>
       </header>
     </div>
